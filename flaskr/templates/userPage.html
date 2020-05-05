@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Stock Advise - Our Team</title>
+<link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" />
+</head>
+<body>
+	<div id="header">
+			<div id="logo">
+				<a href="home.html"><img src="../static/images/logo2.jpg" alt="" /></a>
+			</div>
+			<ul>
+				<li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+				<li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+				<li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+                		<li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                		<li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
+			</ul>
+	</div>
+
+
+	<div id="body">
+		<div class="about">
+			<h1>My Account</h1>
+			<div>
+                <!--
+                  --Unneeded since the endpoint is set up to handle unauthorized users
+                <h2 id="AccName">Error: No User Logged in</h2>
+				<img id="ProfilePicture" src="../static/images/userProfilePictureDefault.jpg" width="350" height="350" alt="" />
+				<p id="UserDescription1">Error: No User Logged in</p>
+				<div></div>
+
+				<script>
+					var name = "Ganesh Baliga";
+					var userDesc = "You are currently following the companies: Google, Apple, and Microsoft";
+					var pfp = "../static/images/testNewProfilePic.jpg";
+
+					document.getElementById("AccName").innerHTML = name;
+					document.getElementById("UserDescription1").innerHTML = userDesc;
+					document.getElementById("ProfilePicture").src = pfp;
+				</script>
+                -->
+
+                <!--Gets the username of the currently logged in user-->
+                {{ current_user.username }}
+				<div></div>
+				<img id="ProfilePicture" src="../static/images/userProfilePictureDefault.jpg" width="250" height="250" alt="" />
+				<div></div>
+                <p>You are currently following the companies: Google, Apple, and Microsoft</p>
+
+                <!--
+				<script>
+					var name = "Ganesh Baliga";
+					var userDesc = "You are currently following the companies: Google, Apple, and Microsoft";
+					var pfp = "../static/images/testNewProfilePic.jpg";
+
+					document.getElementById("AccName").innerHTML = name;
+					document.getElementById("UserDescription1").innerHTML = userDesc;
+					document.getElementById("ProfilePicture").src = pfp;
+				</script>
+                    -->
+
+			</div>
+		</div>
+	</div>
+		<div id="footer">
+			<div>
+				<div>
+					<h3>america</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>europe</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>canada</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>middle east</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>follow us:</h3>
+					<a class="facebook" href="http://facebook.com/freewebsitetemplates" target="_blank">facebook</a>
+					<a class="twitter" href="http://twitter.com/fwtemplates" target="_blank">twitter</a>
+				</div>
+			</div>
+			<div>
+				<p>&copy Copyright 2020. All rights reserved</p>
+			</div>
+		</div>
+	</body>
+</html>

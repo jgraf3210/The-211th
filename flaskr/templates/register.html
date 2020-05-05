@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Business Solutions</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles/login.css" media="all" />
+</head>
+
+<body>
+
+	<div id="header">
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <!--Doesn't need the if else for profile button because user-->
+            <!--cannot get here when logged in-->
+            <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+        </ul>
+	</div>
+    <div class="container">
+        <section id="content">
+            <form action="", method="post">
+                {{ form.csrf_token }}
+                <h1>Enter your information to</h1>
+                <h1>register</h1>
+                <div>
+                    <!--firstname value for the form -->
+                    {{ form.firstname(id="firstname", placeholder="First name") }}
+                    <!--Display error messages related to the firstname section of the form-->
+                    {% if form.firstname.errors %}
+                        <p class="errors">
+                            {% for error in form.firstname.errors %}
+                                <p>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <!--lastname value for the form -->
+                    {{ form.lastname(id="lastname", placeholder="Last name") }}
+                    <!--Display error messages related to the lastname section of the form-->
+                    {% if form.lastname.errors %}
+                      <p class="errors">
+                            {% for error in form.lastname.errors %}
+                                <p>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                      </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <!--email value for the form -->
+                    {{ form.email(id="email", placeholder="Email") }}
+                    <!--Display error messages related to the email section of the form-->
+                    {% if form.email.errors %}
+                        <p class="errors">
+                            {% for error in form.email.errors %}
+                                <p>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                    <!--Display error message if the email is already taken-->
+                    {% with email = get_flashed_messages(category_filter=['email']) %}
+                        {% for msg in email %}
+                            <p>
+                                {{ msg }}
+                            </p>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+
+                <div>
+                    <!--username value for the form -->
+                    {{ form.username(id="username", placeholder="Username") }}
+                    <!--Display error messages related to the username section of the form-->
+                    {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}
+                                <p>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <!--Display error message if username is already taken-->
+                    {% with username = get_flashed_messages(category_filter=['username']) %}
+                        {% for msg in username %}
+                            <p>
+                                {{ msg }}
+                            </p>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+
+                <div>
+                    <!--password value for the form -->
+                    {{ form.password(id="password", placeholder="Password") }}
+                    <!--Display error messages related to the password section of the form-->
+                    {% if form.password.errors %}
+                        <ul class="errors">
+                            {% for error in form.password.errors %}
+                                <p>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {{ form.submit(placeholder ="Register") }}
+                </div>
+            </form><!-- form -->
+
+        </section><!-- content -->
+    </div><!-- container -->
+
+</body>
+
+</html>

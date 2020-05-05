@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Stock Advise - Home</title>
+<link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" rel="icon" href="http://example.com/favicon.png"/>
+
+</head>
+<body>
+	<div id="header">
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li class="selected"><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <!--If the user is logged in the profile button shows-->
+            <!--Else show the login button-->
+            {% if current_user.is_authenticated%}
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
+            {% else  %}
+                <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+            {% endif %}
+        </ul>
+	</div>
+	<div id="body">
+		<div class="header">
+			<div>
+				<ul>
+					<li><img src="../static/images/baliga2.jpg" alt="" /></li>
+					<li><img src="../static/images/lineGraphIcon.jpg" alt="" /></li>
+					<li><img src="../static/images/graph.jpg" alt="" /></li>
+				</ul>		
+				<div>
+					<h3>WELCOME TO STOCK ADVISE</h3>
+					<p>We are here to help you make well informed decisions in the highly volitile world of buying and selling stocks. If you haven't already, please hit the login button to login or create an account.</p>
+				</div>
+			</div>
+		</div>
+		<div class="body">
+			<div class="section">
+				<a href="{{ url_for('routes.services') }}">
+				<img src="../static/images/servicegraph2.jpg" alt="" />
+				Stock highlights
+				</a>			
+			</div>	
+			<div class="article">
+				<img src="../static/images/graph2.jpg" alt="" />
+				<h4>STOCKADVISE IS HERE TO HELP YOU WITH ALL YOUR STOCK NEEDS</h4>
+				<p>We utilize machine learning to accurately predict upcomming stock information based on stock history for companies and give our recommendations for you to make the most profit out of your investment.</p>
+			</div>
+			<div class="section">
+				<a href="{{ url_for('routes.about') }}"><img src="../static/images/globe.jpg" alt="" />about our team</a>
+			</div>		
+		</div>
+
+		<div class="footer">
+			<h4>TWEETS ABOUT CURRENT TOP STOCK COMPANIES</h4>
+			<a class="twitter-timeline" data-width="300" data-height="600" data-theme="dark" href="https://twitter.com/The211th/timelines/1250116721253457923?ref_src=twsrc%5Etfw">GOOGL - Curated tweets by The211th</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+			<a class="twitter-timeline" data-width="300" data-height="600" data-theme="dark" href="https://twitter.com/The211th/timelines/1250116891307376640?ref_src=twsrc%5Etfw">AAPLE - - Curated tweets by The211th</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+			<a class="twitter-timeline" data-width="300" data-height="600" data-theme="dark" href="https://twitter.com/The211th/timelines/1250118383988887553?ref_src=twsrc%5Etfw">MFST - Curated tweets by The211th</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+	<style> /* set the CSS */
+
+
+
+
+		path {
+			stroke: steelblue;
+			stroke-width: 1;
+			fill: none;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: grey;
+			stroke-width: 1;
+			shape-rendering: crispEdges;
+		}
+
+</style>
+
+<title>Stock Advise - Top Weekly Stocks</title>
+<link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" />
+
+</head>
+
+	<div id="header">
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li class="selected"><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <!--If the user is logged in the profile button shows-->
+            <!--Else show the login button-->
+            {% if current_user.is_authenticated%}
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
+            {% else  %}
+                <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+            {% endif %}
+        </ul>
+	</div>
+
+
+	<div id="body">
+		<div class="services">
+			<h1>Stock Data and Predictions</h1>
+		</div>
+		<div class="services">
+
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Tomorrow's Predicted Close For MSFT: <b>{{msft_pred}}</b>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Confidence of Prediction: <b>{{msft_con}}%</b>
+			<div><br></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Tomorrow's Predicted Close For AAPL: <b>{{aapl_pred}}</b>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Confidence of Prediction: <b>{{aapl_con}}%</b>
+			<div><br></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Tomorrow's Predicted Close For GOOGL: <b>{{googl_pred}}</b>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;
+			Confidence of Prediction: <b>{{googl_con}}%</b>
+			<div><br></div>
+
+		</div>
+		<!-- load the d3.js library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script>
+			//JSON Objects
+			var msft_obj = '{{ microsoft_data }}'
+			var aapl_obj = '{{ apple_data }}'
+			var googl_obj = '{{ google_data }}'
+
+			//Clean up JSON Objects
+			msft_obj = msft_obj.replace(RegExp('&#39;', 'g'), '"');
+			msft_obj = msft_obj.replace(RegExp('&#34;', 'g'), '');
+
+			aapl_obj = aapl_obj.replace(RegExp('&#39;', 'g'), '"');
+			aapl_obj = aapl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			googl_obj = googl_obj.replace(RegExp('&#39;', 'g'), '"');
+			googl_obj = googl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			//Parse Objects
+			msft_json = JSON.parse(msft_obj);
+			aapl_json = JSON.parse(aapl_obj);
+			googl_json = JSON.parse(googl_obj);
+
+
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 600, bottom: 50, left: 600},
+				width = 1920 - margin.left - margin.right,
+				height = 300 - margin.top - margin.bottom;
+
+			// Parse the date / time
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(d) { return x(d.date); })
+				.y(function(d) { return y(d.close); });
+
+			// Adds the svg canvas
+			var svg = d3.select("body")
+				.append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+					.attr("transform",
+						  "translate(" + margin.left + "," + margin.top + ")");
+
+			//Pass Data in for Graph
+			data = msft_json
+
+			// Get the data
+			data.forEach(function(d) {
+				d.date = parseDate(d.date);
+				d.close = +d.close;
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(data, function(d) { return d.date; }));
+			y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+			//Add Title
+			svg.append("text")
+				.attr("class", "title")
+				  .attr("x", (width / 2))
+				  .attr("y", 0 - (margin.top / 2))
+				  .attr("text-anchor", "middle")
+				  .style("font-size", "16px")
+				  .style("text-decoration", "underline")
+				  .text("Microsoft Closing Value vs Date");
+
+			// Add the valueline path.
+			svg.append("path")
+				.attr("class", "line")
+				.attr("d", valueline(data));
+
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis);
+
+		</script>
+
+
+	</div>
+
+	<div id="brs">
+		</br>
+		</br>
+	</div>
+
+	<div id="body">
+		<!-- load the d3.js library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script>
+			//JSON Objects
+			var msft_obj = '{{ microsoft_data }}'
+			var aapl_obj = '{{ apple_data }}'
+			var googl_obj = '{{ google_data }}'
+
+			//Clean up JSON Objects
+			msft_obj = msft_obj.replace(RegExp('&#39;', 'g'), '"');
+			msft_obj = msft_obj.replace(RegExp('&#34;', 'g'), '');
+
+			aapl_obj = aapl_obj.replace(RegExp('&#39;', 'g'), '"');
+			aapl_obj = aapl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			googl_obj = googl_obj.replace(RegExp('&#39;', 'g'), '"');
+			googl_obj = googl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			//Parse Objects
+			msft_json = JSON.parse(msft_obj);
+			aapl_json = JSON.parse(aapl_obj);
+			googl_json = JSON.parse(googl_obj);
+
+
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 600, bottom: 50, left: 600},
+				width = 1920 - margin.left - margin.right,
+				height = 300 - margin.top - margin.bottom;
+
+			// Parse the date / time
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(d) { return x(d.date); })
+				.y(function(d) { return y(d.close); });
+
+			// Adds the svg canvas
+			var svg = d3.select("body")
+				.append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+					.attr("transform",
+						  "translate(" + margin.left + "," + margin.top + ")");
+
+			//Pass Data in for Graph
+			data = aapl_json
+
+			// Get the data
+			data.forEach(function(d) {
+				d.date = parseDate(d.date);
+				d.close = +d.close;
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(data, function(d) { return d.date; }));
+			y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+			//Add Title
+			svg.append("text")
+				.attr("class", "title")
+				  .attr("x", (width / 2))
+				  .attr("y", 0 - (margin.top / 2))
+				  .attr("text-anchor", "middle")
+				  .style("font-size", "16px")
+				  .style("text-decoration", "underline")
+				  .text("Apple Closing Value vs Date");
+
+			// Add the valueline path.
+			svg.append("path")
+				.attr("class", "line")
+				.attr("d", valueline(data));
+
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis);
+
+		</script>
+
+
+		</div>
+
+	<div id="brs">
+		</br>
+		</br>
+	</div>
+
+	<div id="body">
+		<!-- load the d3.js library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+		<script>
+			//JSON Objects
+			var msft_obj = '{{ microsoft_data }}'
+			var aapl_obj = '{{ apple_data }}'
+			var googl_obj = '{{ google_data }}'
+
+			//Clean up JSON Objects
+			msft_obj = msft_obj.replace(RegExp('&#39;', 'g'), '"');
+			msft_obj = msft_obj.replace(RegExp('&#34;', 'g'), '');
+
+			aapl_obj = aapl_obj.replace(RegExp('&#39;', 'g'), '"');
+			aapl_obj = aapl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			googl_obj = googl_obj.replace(RegExp('&#39;', 'g'), '"');
+			googl_obj = googl_obj.replace(RegExp('&#34;', 'g'), '');
+
+			//Parse Objects
+			msft_json = JSON.parse(msft_obj);
+			aapl_json = JSON.parse(aapl_obj);
+			googl_json = JSON.parse(googl_obj);
+
+
+			// Set the dimensions of the canvas / graph
+			var margin = {top: 30, right: 600, bottom: 50, left: 600},
+				width = 1920 - margin.left - margin.right,
+				height = 300 - margin.top - margin.bottom;
+
+			// Parse the date / time
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			// Define the axes
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+
+			// Define the line
+			var valueline = d3.svg.line()
+				.x(function(d) { return x(d.date); })
+				.y(function(d) { return y(d.close); });
+
+			// Adds the svg canvas
+			var svg = d3.select("body")
+				.append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+					.attr("transform",
+						  "translate(" + margin.left + "," + margin.top + ")");
+
+			//Pass Data in for Graph
+			data = googl_json
+
+			// Get the data
+			data.forEach(function(d) {
+				d.date = parseDate(d.date);
+				d.close = +d.close;
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(data, function(d) { return d.date; }));
+			y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+			//Add Title
+			svg.append("text")
+				.attr("class", "title")
+				  .attr("x", (width / 2))
+				  .attr("y", 0 - (margin.top / 2))
+				  .attr("text-anchor", "middle")
+				  .style("font-size", "16px")
+				  .style("text-decoration", "underline")
+				  .text("Google Closing Value vs Date");
+
+			// Add the valueline path.
+			svg.append("path")
+				.attr("class", "line")
+				.attr("d", valueline(data));
+
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis);
+
+		</script>
+
+
+		</div>
+
+	<div id="brs">
+		</br>
+		</br>
+	</div>
+
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Business Solutions</title>
+<link rel="stylesheet" type="text/css" href="../static/styles/style.css" media="all" />
+</head>
+<body>
+	<div id="header">
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li class="selected"><a href="{{ url_for('routes.about') }}"><span>about us</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>services</span></a></li>
+            <li><a href="{{ url_for('routes.products') }}"><span>products</span></a></li>
+            <li><a href="{{ url_for('routes.contact') }}"><span>contact us</span></a></li>
+            <!--If the user is logged in the profile button shows-->
+            <!--Else show the login button-->
+            {% if current_user.is_authenticated%}
+                <li><a href="{{ url_for('routes.profile') }}"><span>profile</span></a> </li>
+                <li><a href="{{ url_for('routes.logout') }}"><span>logout</span></a> </li>
+            {% else  %}
+                <li><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+            {% endif %}
+        </ul>
+	</div>
+	<div id="body">
+		<div class="about">
+			<h1>about</h1>
+			<div>
+				<h2>Ethan Hudak</h2>
+				<img src="../static/images/EthanPortrait.jpg" alt="" />
+				<p>if you're reading this, this is the ourTeam file, not the about file</p>
+
+			</div>
+			<div>
+				<h2>We Have More Templates for You</h2>
+				<p>Looking for more templates? Just browse through all our <a href="http://www.freewebsitetemplates.com/">Free Website Templates</a> and find what you’re looking for. But if you don’t find any website template you can use, you can try our <a href="http://www.freewebsitetemplates.com/freewebdesign/">Free Web Design</a> service and tell us all about it. Maybe you’re looking for something different, something special. And we love the challenge of doing something different and something special.</p>
+			</div>
+			<div>
+				<h2>Be Part of Our Community</h2>
+				<p>If you’re experiencing issues and concerns about this website template, join the discussion <a href="http://www.freewebsitetemplates.com/forum/">on our forum</a> and meet other people in the community who share the same interests with you.</p>
+				<p>Template details</p>
+				<p>Version 3</p>
+				<p>Website Template details, discussion and updates for this <a href="http://www.freewebsitetemplates.com/forum/f18/business-world-website-template-18525">Business Solutions template</a>. Website Template design by <a href="http://www.freewebsitetemplates.com/">Free Website Templates</a>.</p>
+				<p>Please feel free to remove some or all the text and links of this page and replace it with your own About content.</p>
+            </div>
+		</div>
+	</div>
+		<div id="footer">
+			<div>
+				<div>
+					<h3>america</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>europe</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>canada</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>middle east</h3>
+					<ul>
+						<li>457-380-1654 main</li>
+						<li>257-301-9417 toll free</li>
+					</ul>
+				</div>
+				<div>
+					<h3>follow us:</h3>
+					<a class="facebook" href="http://facebook.com/freewebsitetemplates" target="_blank">facebook</a>
+					<a class="twitter" href="http://twitter.com/fwtemplates" target="_blank">twitter</a>
+				</div>
+			</div>
+			<div>
+				<p>&copy Copyright 2012. All rights reserved</p>
+			</div>
+		</div>
+	</body>
+</html>

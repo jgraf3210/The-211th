@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Business Solutions</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles/login.css" media="all" />
+</head>
+
+<body>
+
+	<div id="header">
+        <div id="logo">
+            <a href="{{ url_for('routes.home') }}"><img src="../static/images/logo2.jpg" alt="" /></a>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('routes.home') }}"><span>home</span></a></li>
+            <li><a href="{{ url_for('routes.about') }}"><span>our team</span></a></li>
+            <li><a href="{{ url_for('routes.services') }}"><span>top stocks</span></a></li>
+            <!--Doesn't need the if else for profile button because user-->
+            <!--cannot get here when logged in-->
+            <li class="selected"><a href="{{ url_for('routes.login') }}"><span>login</span></a> </li>
+        </ul>
+	</div>
+    <div class="container">
+        <section id="content">
+            <form action="{{ url_for('routes.login') }}" method="post">
+                {{ form.csrf_token }}
+                <h1>Enter your login information</h1>
+                <div>
+                    {{ form.username(placeholder="Username") }}
+                </div>
+                <div>
+                    {{ form.password(placeholder="Password") }}
+                </div>
+                <!--Print flashed messages-->
+                <!--Should only be used when the user enters bad information-->
+                {% for message in get_flashed_messages() %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                <div>
+                    {{ form.submit() }}
+                    <a href="{{ url_for('routes.forgot_password') }}">Lost your password?</a>
+                    <a href="{{ url_for("routes.register") }}">Register</a>
+                </div>
+            </form><!-- form -->
+        </section><!-- content -->
+    </div><!-- container -->
+
+</body>
+
+</html>
