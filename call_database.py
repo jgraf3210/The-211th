@@ -3,7 +3,9 @@
 import os
 import csv
 from flask import Flask
-from flaskr import cnxn
+from flaskr import db
+from flaskr.models import Stock, Stock_daily
+
 # OS file separator
 sep = os.path.sep
 # Root directory
@@ -13,17 +15,12 @@ root = os.getcwd()
 # Removes the need for hard-coding the path
 machineLearningDir = root + sep + "MachineLearning" + sep
 
-cursor = cnxn.cursor()
-
 app = Flask(__name__)
 
 
 # *************GET ALL DATA***************************************
 def pullAllData():
-    all = "SELECT * FROM StockAdviseDB.dbo.MAIN;"
-    cursor.execute(all)
-    fetch = cursor.fetchall()
-    cursor.commit()
+    all = Stock_daily.query.all()
 # #This iterates through all the rows of data and prints on console
     with open(machineLearningDir + "AllData.csv", "w", newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')

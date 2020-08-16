@@ -1,10 +1,9 @@
-from alembic.autogenerate import render
 from flask import render_template, redirect, flash, request, url_for, Blueprint
 from flaskr.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_required, login_user, logout_user
-from flaskr.models import User
+from flaskr.models import User, StockDaily, Prediction
 from werkzeug.security import generate_password_hash
-from flaskr import db, cnxn
+from flaskr import db
 import os
 import json
 
@@ -26,20 +25,21 @@ symbols = ['MSFT', 'AAPL', 'GOOGL']
 
 def create_objects(symbol):
     data = []
-    cursor = cnxn.cursor()
-    query = "SELECT * FROM StockAdviseDB.dbo.MAIN WHERE SYMBOL = '%s';" % symbol
-    cursor.execute(query)
-    rows = cursor.fetchall()
-    cursor.commit()
+    msft_data = StockDaily.query.filter_by(stock_symbol=symbols[1])
+    aapl_data = StockDaily.query.filter_by(stock_symbol=symbols[2])
+    googl_data = StockDaily.query.filter_by(stock_symbol=symbols[3])
 
-    for row in rows:
+    for row in msft_data:
+        data.append([x for x in row])
+    for row in aapl_data:
+        data.append([x for x in row])
+    for row in googl_data:
         data.append([x for x in row])
     jdata = json.dumps(data, indent=4)
     ndata = json.loads(jdata)
 
     data_obj = []
     for row in ndata:
-        # print(row)
         dict_row = {
             "symbol": '"' + row[1] + '"',
             "date": '"' + row[2] + '"',
@@ -54,11 +54,7 @@ def create_objects(symbol):
     return stock_data
 
 def get_prediction(symbol):
-    cursor = cnxn.cursor()
-    query = "SELECT PREDICTED_CLOSE, CONFIDENCE_VAL FROM StockAdviseDB.dbo.Predictions WHERE SYMBOL = '%s';" % symbol
-    cursor.execute(query)
-    prediction = cursor.fetchall()
-    cursor.commit()
+    prediction = Prediction.query.all()
     return prediction[0]
 
 #Confidence Value For Stocks
@@ -78,6 +74,7 @@ googl_data = create_objects('GOOGL')
 
 
 ######################################################################################################
+
 # Home page endpoint
 @routes.route("/")
 def home():
@@ -92,6 +89,7 @@ def about():
 @routes.route("/contact")
 def contact():
     return render_template("contact.html")
+
 
 #Routes to page with D3 Graphs, currently displays data as a variable
 @routes.route("/services")
@@ -204,6 +202,7 @@ def profile():
     if(current_user.is_authenticated):
         return render_template('userPage.html')
     return redirect(url_for('routes.home'))
+
 
 # Route for deleting a user
 @routes.route('/delete')

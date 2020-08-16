@@ -11,11 +11,11 @@ app = Flask(__name__)
 class User(db.Model, UserMixin):
     __tablename__ = 'Users'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.VARCHAR(20))
-    last_name = db.Column(db.VARCHAR(30))
-    email = db.Column(db.VARCHAR(50))
-    pass_hash = db.Column(db.VARCHAR(100))
-    username = db.Column(db.VARCHAR(25))
+    first_name = db.Column(db.VARCHAR(20), nullable=False)
+    last_name = db.Column(db.VARCHAR(30), nullable=False)
+    email = db.Column(db.VARCHAR(50), unique=True, nullable=False)
+    pass_hash = db.Column(db.VARCHAR(100), nullable=False)
+    username = db.Column(db.VARCHAR(25), unique=True, nullable=False)
 
     # Functions to return values
     def get_id(self):
@@ -62,3 +62,41 @@ class User(db.Model, UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+class Stock(db.Model):
+    stock_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    stock_name = db.Column(db.VARCHAR(30), unique=True, nullable=False)
+    ticker = db.Column(db.VARCHAR(10), unique=True, nullable=False)
+
+    def __init__(self, stock_id, stock_name, ticker):
+        self.stock_id = stock_id
+        self.stock_name = stock_name
+        self.ticker = ticker
+
+
+class StockDaily(db.Model):
+    stock_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    stock_symbol = db.Column(db.VARCHAR(10), nullable=False)
+    open_price = db.Column(db.REAL, nullable=False)
+    high_price = db.Column(db.REAL, nullable=False)
+    low_price = db.Column(db.REAL, nullable=False)
+    close_price = db.Column(db.REAL, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    volume = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, stock_id, stock_symbol, open_price, high_price, low_price, close_price, date, volume ):
+        self.stock_id = stock_id
+        self.stock_symbol = stock_symbol
+        self.open_price = open_price
+        self.high_price = high_price
+        self.low_price = low_price
+        self.close_price = close_price
+        self.date = date
+        self.volume = volume
+
+
+class Prediction(db.Model):
+    stock_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    predicted_value = db.Column(db.REAL, nullable=False)
+    confidence_value = db.Column(db.REAL, nullable=False)
